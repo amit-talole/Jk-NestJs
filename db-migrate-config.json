@@ -1,0 +1,15 @@
+{
+    "defaultEnv": {
+      "ENV": "NODE_ENV"
+    },
+    "uat": {
+      "ENV": "DATABASE_URL"
+    },
+    "staging": {
+      "ENV": "DATABASE_URL"
+    },
+    "prod":{
+      "ENV": "DATABASE_URL"
+    },
+    "sql-file": true
+  }
