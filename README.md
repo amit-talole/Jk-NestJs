@@ -13,6 +13,6 @@ This is a sample project demonstrating NestJS.
 
 ## migration create commond 
 
- - ./node_modules/db-migrate/bin/db-migrate create <give table name or query name> --config ./db-migrate-config.json -e uat
+ - ./node_modules/db-migrate/bin/db-migrate create <'give table name or query name'> --config ./db-migrate-config.json -e uat
 
 - example : `./node_modules/db-migrate/bin/db-migrate create user_table --config ./db-migrate-config.json -e uat`
