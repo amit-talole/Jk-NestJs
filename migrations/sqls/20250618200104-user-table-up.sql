@@ -1,6 +1,6 @@
 /* Replace with your SQL commands */
 
-CREATE TYPE user_role_enum AS ENUM ('(admin','editor','viewer');
+CREATE TYPE user_role_enum AS ENUM ('admin','editor','viewer');
 
 
 CREATE TABLE "user" (
