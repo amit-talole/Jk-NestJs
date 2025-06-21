@@ -81,25 +81,34 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<any> {
     const { firstName, lastName, password, role, email } = updateUserDto;
-    const result = await this.prisma.user.update({
-      where: { id },
-      data: {
-        firstName: firstName?.trim() || undefined,
-        lastName: lastName?.trim() || undefined,
-        password: password?.trim() || undefined,
-        role: role?.trim() ? user_role_enum[role] : undefined,
-        email: email?.trim() || undefined,
-      },
-      select: {
-        firstName: true,
-        lastName: true,
-        email: true,
-        role: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-    return result;
+    try {
+      const result = await this.prisma.user.update({
+        where: { id },
+        data: {
+          firstName: firstName?.trim() || undefined,
+          lastName: lastName?.trim() || undefined,
+          password: password?.trim() || undefined,
+          role: role?.trim() ? user_role_enum[role] : undefined,
+          email: email?.trim() || undefined,
+        },
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      if (error?.code === 'P2025') {
+        return {
+          message: 'user not found',
+          statusCode: HttpStatus.NOT_FOUND,
+        };
+      }
+    }
   }
 
   async remove(id: number): Promise<{ message: string }> {

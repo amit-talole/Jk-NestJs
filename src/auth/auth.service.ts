@@ -8,7 +8,6 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { UpdateUserDto } from '../users/dto/update-user-dto';
 import { LoginDto } from './dto/LoginDto';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { CommonService } from '../common/services/common-services';
@@ -107,31 +106,6 @@ export class AuthService {
     return this.register(createUserDto, role);
   }
 
-  async getProfile(id: number): Promise<any> {
-    const user = await this.usersService.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
-  }
-
-  async updateProfile(id: number, updateUserDto: UpdateUserDto): Promise<any> {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  async deleteProfile(id: number): Promise<void> {
-    await this.usersService.remove(id);
-  }
-
-  async changePassword(id: number, newPassword: string): Promise<any> {
-    const hashedPassword = await this.commonService.hashPassword(newPassword);
-    const user = await this.usersService.findOne(id);
-    const updateUserDto: UpdateUserDto = {
-      email: user.email,
-      password: hashedPassword,
-    };
-    return this.usersService.update(id, updateUserDto);
-  }
   async refreshToken(
     refreshToken: string,
     user: any,

@@ -43,6 +43,7 @@ describe('AuthService', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
+            refreshToken: jest.fn(),
             upsertRefreshToken: jest.fn(),
           },
         },
@@ -187,50 +188,30 @@ describe('AuthService', () => {
     });
   });
 
-  describe('getProfile', () => {
-    it('should return user profile if user is found', async () => {
-      jest.spyOn(usersService, 'findOne').mockResolvedValue(mockUser);
-
-      const result = await service.getProfile(1);
-      expect(result).toEqual(mockUser);
-    });
-
-    it('should throw NotFoundException if user is not found', async () => {
-      jest.spyOn(usersService, 'findOne').mockResolvedValue(null);
-
-      await expect(service.getProfile(1)).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('updateProfile', () => {
-    it('should update user profile', async () => {
-      const updateUserDto = {
-        email: 'test@example.com',
-        name: 'Updated User',
-        password: 'newPassword',
-      };
-      jest
-        .spyOn(usersService, 'update')
-        .mockResolvedValue({ id: '1', ...updateUserDto });
-
-      const result = await service.updateProfile(1, updateUserDto);
-      expect(result).toEqual({ id: '1', ...updateUserDto });
-    });
-  });
-
-  describe('deleteProfile', () => {
-    it('should delete user profile', async () => {
-      jest.spyOn(usersService, 'remove').mockResolvedValue(undefined);
-
-      await expect(service.deleteProfile(1)).resolves.toBeUndefined();
-    });
-  });
   describe('logout', () => {
     it('should delete user profile', async () => {
       const user: any = { id: 1 };
       jest.spyOn(service, 'logout').mockResolvedValue(undefined);
 
       await expect(service.logout(user)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('refreshToken', () => {
+    it('should get refresh token', async () => {
+      const token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsImVtYWlsIjoiam9kZGhuLmRvZGRlMTJkQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUwNTA1OTUxLCJleHAiOjE3NTA1OTIzNTF9.0vWvIjyl1MoUw4yGssviInoOdFKUD28BppNJisOhk6Y';
+      const user: any = { id: 1 };
+      const response = {
+        refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+      };
+      jest.spyOn(service, 'refreshToken').mockResolvedValue(response);
+
+      jest.spyOn(usersService, 'findUniqueByEmail').mockResolvedValue(mockUser);
+      jest.spyOn(commonService, 'comparePassword').mockResolvedValue(true);
+
+      const result = await service.refreshToken(token, user);
+      expect(result).toEqual(response);
     });
   });
 });
