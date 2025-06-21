@@ -11,6 +11,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CommonService } from '../common/services/common-services';
 import { user_role_enum } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -42,6 +43,7 @@ describe('AuthService', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
+            upsertRefreshToken: jest.fn(),
           },
         },
         {
@@ -55,6 +57,19 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: jest.fn(),
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              const config = {
+                JWT_SECRET: 'test-secret',
+                JWT_EXPIRATION: '1h',
+                // add other config keys here
+              };
+              return config[key];
+            }),
           },
         },
       ],
@@ -103,7 +118,10 @@ describe('AuthService', () => {
         email: 'test@example.com',
         password: 'password',
       });
-      expect(result).toEqual({ access_token: 'access_token' });
+      expect(result).toEqual({
+        accessToken: 'access_token',
+        refreshToken: 'access_token',
+      });
     });
 
     it('should throw UnauthorizedException if user is not found', async () => {
@@ -205,6 +223,14 @@ describe('AuthService', () => {
       jest.spyOn(usersService, 'remove').mockResolvedValue(undefined);
 
       await expect(service.deleteProfile(1)).resolves.toBeUndefined();
+    });
+  });
+  describe('logout', () => {
+    it('should delete user profile', async () => {
+      const user: any = { id: 1 };
+      jest.spyOn(service, 'logout').mockResolvedValue(undefined);
+
+      await expect(service.logout(user)).resolves.toBeUndefined();
     });
   });
 });

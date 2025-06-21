@@ -18,6 +18,7 @@ describe('AuthController', () => {
             login: jest.fn(),
             register: jest.fn(),
             AdminRegisterAsync: jest.fn(),
+            logout: jest.fn(),
           },
         },
       ],
@@ -104,6 +105,24 @@ describe('AuthController', () => {
         createAuthDto,
         'admin',
       );
+      expect(response).toEqual(result);
+    });
+  });
+  describe('logout', () => {
+    it('should call AuthService.login with correct parameters', async () => {
+      const loginDto: any = {
+        id: 1,
+        email: 'eamil@test.com',
+        firstName: 'test',
+        lastName: 'test',
+      };
+      const result = {
+        message: 'sucess',
+        statusCode: 200,
+      };
+      jest.spyOn(authService, 'logout').mockResolvedValue(result);
+      const response = await controller.logout(loginDto);
+      expect(authService.logout).toHaveBeenCalledWith(loginDto);
       expect(response).toEqual(result);
     });
   });

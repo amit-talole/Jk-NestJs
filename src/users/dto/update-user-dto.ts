@@ -3,22 +3,25 @@ import { IsEmail, IsString, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiProperty({
-    description: '',
-    minLength: 2,
-    maxLength: 30,
-    type: String,
-    example: '',
+    example: 'john',
   })
-  name: string;
-
+  @IsString()
   @IsOptional()
+  firstName?: string;
+
   @ApiProperty({
-    description: '',
-    minLength: 6,
-    type: String,
-    example: '',
+    example: 'don',
   })
-  password: string;
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @ApiProperty({
+    example: 'admin',
+  })
+  @IsString()
+  @IsOptional()
+  role?: string;
 
   @ApiProperty({
     description: '',
@@ -27,5 +30,13 @@ export class UpdateUserDto {
   })
   @IsString()
   @IsEmail()
-  email: string;
+  @IsOptional()
+  email?: string;
+
+  @ApiProperty({
+    description: '',
+  })
+  @IsOptional()
+  @IsString()
+  password?: string;
 }

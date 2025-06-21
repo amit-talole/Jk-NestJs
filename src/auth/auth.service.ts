@@ -12,7 +12,8 @@ import { UpdateUserDto } from '../users/dto/update-user-dto';
 import { LoginDto } from './dto/LoginDto';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { CommonService } from '../common/services/common-services';
-import { user, user_role_enum } from '@prisma/client';
+import { user as User, user_role_enum } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly commonService: CommonService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -40,7 +42,6 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<any> {
     const user = await this.usersService.findUniqueByEmail(loginDto.email);
-    console.log('User retrieved:', user); // Debugging log
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -50,19 +51,18 @@ export class AuthService {
       loginDto.password,
       user.password,
     );
-    console.log('Password comparison result:', isPasswordValid); // Debugging log
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      sub: user.id,
-    };
+    const accessToken = this.generateToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+    await this.usersService.upsertRefreshToken(refreshToken, user.id);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -84,6 +84,9 @@ export class AuthService {
     });
     if (result) {
       const accessToken = this.generateToken(result);
+      const refreshToken = this.generateRefreshToken(result);
+      await this.usersService.upsertRefreshToken(refreshToken, result?.id);
+
       return {
         data: {
           id: result.id,
@@ -91,7 +94,8 @@ export class AuthService {
           firstName: result.firstName,
           lastName: result.lastName,
           role: result.role,
-          access_token: accessToken,
+          accessToken: accessToken,
+          refreshToken: refreshToken,
         },
         message: 'Sucesss',
         statusCode: HttpStatus.OK,
@@ -123,14 +127,42 @@ export class AuthService {
     const hashedPassword = await this.commonService.hashPassword(newPassword);
     const user = await this.usersService.findOne(id);
     const updateUserDto: UpdateUserDto = {
-      name: user.username,
       email: user.email,
       password: hashedPassword,
     };
     return this.usersService.update(id, updateUserDto);
   }
-  private generateToken(user: user) {
+  async refreshToken(
+    refreshToken: string,
+    user: any,
+  ): Promise<{ refresh_token: string }> {
+    const result = await this.usersService.findByToken(refreshToken);
+    if (!result) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+    const response = this.generateRefreshToken(user);
+    await this.usersService.upsertRefreshToken(response, user?.sub);
+
+    return {
+      refresh_token: response,
+    };
+  }
+  async logout(user: User) {
+    return this.usersService.deleteRefreshToken(user.id);
+  }
+  private generateToken(user: User) {
     const payload = { sub: user.id, email: user.email, role: user.role };
-    return this.jwtService.sign(payload);
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: this.configService.get('JWT_EXPIRATION'),
+    });
+  }
+  private generateRefreshToken(user: User): string {
+    const payload = { sub: user.id, email: user.email, role: user.role };
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: '2 days',
+    });
   }
 }
