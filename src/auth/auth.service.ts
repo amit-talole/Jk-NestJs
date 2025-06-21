@@ -89,7 +89,7 @@ export class AuthService {
           id: result.id,
           email: result.email,
           firstName: result.firstName,
-          lattName: result.lastName,
+          lastName: result.lastName,
           role: result.role,
           access_token: accessToken,
         },

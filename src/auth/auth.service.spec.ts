@@ -131,6 +131,7 @@ describe('AuthService', () => {
         password: 'hashedPassword',
         firstName: 'Test',
         lastName: 'User',
+        role: 'admin',
       };
       jest.spyOn(usersService, 'findUniqueByEmail').mockResolvedValue(null);
       jest
@@ -146,8 +147,10 @@ describe('AuthService', () => {
       expect(result).toEqual({
         data: {
           id: 1,
-          ...createUserDto,
-          // access_token: 'mocked-jwt-token',
+          firstName: 'Test',
+          lastName: 'User',
+          role: 'admin',
+          email: 'test@example.com',
         },
         message: 'Sucesss',
         statusCode: 200,

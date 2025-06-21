@@ -17,6 +17,7 @@ describe('AuthController', () => {
           useValue: {
             login: jest.fn(),
             register: jest.fn(),
+            AdminRegisterAsync: jest.fn(),
           },
         },
       ],
@@ -48,17 +49,61 @@ describe('AuthController', () => {
   describe('register', () => {
     it('should call AuthService.register with correct parameters', async () => {
       const createAuthDto: CreateAuthDto = {
-        firstName: 'test',
-        lastName: 'test',
-        email: 'test@test.com',
-        password: 'test',
+        firstName: 'John',
+        lastName: 'doe',
+        email: 'test487784@example.com',
+        password: 'test123',
       };
-      const result = { id: 1, username: 'test' };
+      const result = {
+        data: {
+          id: 1,
+          firstName: 'John',
+          lastName: 'doe',
+          role: 'editor',
+          email: 'test487784@example.com',
+        },
+        message: 'Sucesss',
+        statusCode: 200,
+      };
       jest.spyOn(authService, 'register').mockResolvedValue(result);
 
       const response = await controller.register(createAuthDto);
 
-      expect(authService.register).toHaveBeenCalledWith(createAuthDto);
+      expect(authService.register).toHaveBeenCalledWith(
+        createAuthDto,
+        'editor',
+      );
+      expect(response).toEqual(result);
+    });
+  });
+
+  describe('AdminRegister', () => {
+    it('should call AuthService.register with correct parameters', async () => {
+      const createAuthDto: CreateAuthDto = {
+        firstName: 'John',
+        lastName: 'doe',
+        email: 'test487784@example.com',
+        password: 'test123',
+      };
+      const result = {
+        data: {
+          id: 1,
+          firstName: 'John',
+          lastName: 'doe',
+          role: 'admin',
+          email: 'test487784@example.com',
+        },
+        message: 'Sucesss',
+        statusCode: 200,
+      };
+      jest.spyOn(authService, 'AdminRegisterAsync').mockResolvedValue(result);
+
+      const response = await controller.AdminRegister(createAuthDto);
+
+      expect(authService.AdminRegisterAsync).toHaveBeenCalledWith(
+        createAuthDto,
+        'admin',
+      );
       expect(response).toEqual(result);
     });
   });
