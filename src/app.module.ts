@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { DocumentsModule } from './documents/documents.module';
+import { IngestionModule } from './ ingestion/ ingestion.module';
+import config from './common/configs/config';
 
 @Module({
   imports: [
@@ -12,9 +14,11 @@ import { DocumentsModule } from './documents/documents.module';
     UsersModule,
     AuthModule,
     DocumentsModule,
+    IngestionModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [config],
     }),
   ],
   controllers: [AppController],
