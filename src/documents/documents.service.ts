@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  HttpCode,
   HttpStatus,
   Injectable,
   NotFoundException,
@@ -34,7 +33,7 @@ export class DocumentsService {
     if (!id) {
       throw new BadRequestException('Invalid Parameter');
     }
-    const result = await this.prisma.documents.findFirst({
+    const result: any = await this.prisma.documents.findFirst({
       where: {
         id,
       },
@@ -58,7 +57,7 @@ export class DocumentsService {
       // Ensure upload directory exists
       fileData = await this.commonService.uploadFile(file);
     }
-    const result = await this.prisma.documents.update({
+    const result: any = await this.prisma.documents.update({
       where: {
         id,
       },
@@ -101,5 +100,22 @@ export class DocumentsService {
       throw new BadRequestException('something went wrong');
     }
     return result;
+  }
+  async delete(id: number) {
+    if (!id) {
+      throw new BadRequestException('Invalid Parameter');
+    }
+    const result = await this.prisma.documents.delete({
+      where: {
+        id,
+      },
+    });
+    if (!result) {
+      throw new NotFoundException('record not found');
+    }
+    return {
+      message: 'success',
+      statusCode: 200,
+    };
   }
 }

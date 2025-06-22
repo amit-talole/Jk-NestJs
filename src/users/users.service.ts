@@ -52,9 +52,6 @@ export class UsersService {
         statusCode: HttpStatus.BAD_REQUEST,
       };
     }
-    // if (!user) {
-    //   throw new NotFoundException('User not found');
-    // }
     return user;
   }
 
