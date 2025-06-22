@@ -114,32 +114,4 @@ describe('UsersController', () => {
       expect(response).toEqual(result);
     });
   });
-
-  describe('remove', () => {
-    it('should call usersService.remove with correct parameters', async () => {
-      const id = 5;
-      const result = {
-        message: `User with ID ${id} has been successfully deleted`,
-      };
-      jest.spyOn(usersService, 'remove').mockResolvedValue(result);
-      const response = await controller.remove(id);
-      expect(usersService.remove).toHaveBeenCalledWith(id);
-      expect(response).toEqual(result);
-    });
-  });
-
-  describe('remove', () => {
-    it('should call usersService.remove with not found parameters', async () => {
-      const id = 6588888;
-      const result = {
-        message: `User with ID ${id} not found`,
-        error: 'Not Found',
-        statusCode: 404,
-      };
-      jest.spyOn(usersService, 'remove').mockResolvedValue(result);
-      const response = await controller.remove(id);
-      expect(usersService.remove).toHaveBeenCalledWith(id);
-      expect(response).toEqual(result);
-    });
-  });
 });

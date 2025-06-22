@@ -13,7 +13,6 @@ describe('UsersService', () => {
             findAll: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
-            remove: jest.fn(),
           },
         },
       ],
@@ -100,33 +99,6 @@ describe('UsersService', () => {
 
       const result = await service.update(id, updateUserDto);
       expect(service.update).toHaveBeenCalledWith(id, updateUserDto);
-      expect(result).toEqual(response);
-    });
-  });
-
-  describe('remove', () => {
-    it('should call remove with correct parameters', async () => {
-      const id = 5;
-      const result = {
-        message: `User with ID ${id} has been successfully deleted`,
-      };
-      jest.spyOn(service, 'remove').mockResolvedValue(result);
-
-      const response = await service.remove(id);
-      expect(service.remove).toHaveBeenCalledWith(id);
-      expect(response).toEqual(result);
-    });
-
-    it('should call remove with not found parameters', async () => {
-      const id = 555;
-      const response = {
-        message: 'user not found',
-        statusCode: 400,
-      };
-      jest.spyOn(service, 'remove').mockResolvedValue(response);
-
-      const result = await service.remove(id);
-      expect(service.remove).toHaveBeenCalledWith(id);
       expect(result).toEqual(response);
     });
   });

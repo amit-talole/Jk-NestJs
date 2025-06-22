@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Delete,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Patch, Body, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -40,12 +32,5 @@ export class UsersController {
   @Roles(RolesEnum.admin)
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(Number(id), updateUserDto);
-  }
-
-  @Delete(':id')
-  @UseGuards(RolesGuard)
-  @Roles(RolesEnum.admin)
-  async remove(@Param('id') id: number) {
-    return this.usersService.remove(Number(id));
   }
 }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
@@ -111,24 +111,6 @@ export class UsersService {
     }
   }
 
-  async remove(id: number): Promise<{ message: string }> {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    await this.prisma.user.delete({
-      where: { id },
-    });
-
-    return { message: `User with ID ${id} has been successfully deleted` };
-  }
   async findByToken(token: string): Promise<UserToken | null> {
     return this.prisma.user_tokens.findFirst({
       where: { refreshToken: token },
