@@ -37,7 +37,6 @@
     "class-validator": "^0.14.0",
     "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.5.2",
-    "dotenv": "^16.5.0",
     "multer": "^2.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
