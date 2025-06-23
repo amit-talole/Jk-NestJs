@@ -21,6 +21,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Create .env from GitHub secrets
+        run: |
+          cat <<EOF > .env
+          PORT=3100
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION=${{ secrets.JWT_EXPIRATION }} 
+          JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} 
+          EOF
+
+
       - name: Build & Push Docker Image
         uses: docker/build-push-action@v5
         with:
