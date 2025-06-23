@@ -1,6 +1,8 @@
 FROM node:22-bullseye
 WORKDIR /app
 COPY . .
+## now does not have time so copy local env 
+COPY .env .env
 COPY package.json ./
 RUN npm install
 RUN npm run prisma:generate 
