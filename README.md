@@ -22,4 +22,20 @@ This is a sample project demonstrating NestJS.
 - health: - http://13.126.20.61/health
 
 ## test case
-- i have added only few test case due to time limit over 
+- i have added only few  e2e test case due to time limit over but write all service and controller test case
+
+## what is implemented
+- setup with nestJs
+- added prisma ORM
+- added migration support
+- added authorization and authentication
+- added rate limit
+- setup globle config
+- setup swagger
+- added controller test case
+- added service test case
+- setup a piping 
+- added a Docker file and Docker Compose
+- docker image push in dockerhub
+- added cicd using github action
+- deploy add on ec2 using docker image 
