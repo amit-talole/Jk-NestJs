@@ -7,6 +7,9 @@ import { AppController } from './app.controller';
 import { DocumentsModule } from './documents/documents.module';
 import { IngestionModule } from './ ingestion/ ingestion.module';
 import config from './common/configs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,7 +23,16 @@ import config from './common/configs/config';
       envFilePath: '.env',
       load: [config],
     }),
+    ThrottlerModule.forRootAsync({
+      useFactory: async () => [
+        {
+          ttl: 60, // Time to live in seconds
+          limit: 10, // Max 10 requests per ttl window
+        },
+      ],
+    }),
   ],
   controllers: [AppController],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

@@ -18,13 +18,16 @@ import { RolesEnum } from '../common/enum/role-enum';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { user as User } from '@prisma/client';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.ts';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UpdateDocumentDto } from './dto/document-dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('document')
 @ApiTags('document')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
+@Throttle({ default: { limit: 20, ttl: 1000 } })
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
