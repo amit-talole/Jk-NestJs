@@ -20,3 +20,6 @@ This is a sample project demonstrating NestJS.
 ## ec2 end point
 - http://13.126.20.61
 - health: - http://13.126.20.61/health
+
+## test case
+- i have added only few test case due to time limit over 
