@@ -16,3 +16,7 @@ This is a sample project demonstrating NestJS.
  - ./node_modules/db-migrate/bin/db-migrate create <'give table name or query name'> --config ./db-migrate-config.json -e uat
 
 - example : `./node_modules/db-migrate/bin/db-migrate create user_table --config ./db-migrate-config.json -e uat`
+
+## ec2 end point
+- http://13.126.20.61
+- health: - http://13.126.20.61/health

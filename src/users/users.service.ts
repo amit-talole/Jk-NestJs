@@ -95,6 +95,7 @@ export class UsersService {
           role: true,
           createdAt: true,
           updatedAt: true,
+          id: true,
         },
       });
       return result;
