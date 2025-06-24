@@ -8,7 +8,6 @@ jest.setTimeout(600000);
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  // let editorToken: string;
   let adminToken: string;
 
   beforeEach(async () => {
@@ -40,16 +39,6 @@ describe('AppController (e2e)', () => {
       });
 
     adminToken = loginAdmin.body.accessToken;
-
-    // Login to get access token
-    const loginEditor: any = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send({
-        email: 'user@example.com',
-        password: 'user123',
-      });
-
-    editorToken = loginEditor.body.accessToken;
   });
 
   afterEach(async () => {
