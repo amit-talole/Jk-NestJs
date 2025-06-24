@@ -21,6 +21,9 @@ This is a sample project demonstrating NestJS.
 - http://13.126.20.61
 - health: - http://13.126.20.61/health
 
+## swagger api point
+- http://13.126.20.61/api
+
 ## test case
 - i have added only few  e2e test case due to time limit over but write all service and controller test case
 
